@@ -9,16 +9,16 @@ class GroceryList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Grocery List'),
+        title: const Text('Your Groceries'),
       ),
       body: ListView.builder(
-        itemCount: categories.length,
+        itemCount: groceryItems.length,
         itemBuilder: (ctx, index) {
           final grocery_item = groceryItems.elementAt(index);
           final category = grocery_item.category;
 
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(bottom: 24.0, left: 16.0, right: 16.0),
             child: Row(
               children: [
                 Container(
@@ -30,7 +30,7 @@ class GroceryList extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: 8), // Отступ между цветом и текстом
+                const SizedBox(width: 20), // Отступ между цветом и текстом
                 Text(
                   grocery_item.name, // Название категории
                   style: const TextStyle(fontSize: 16),
@@ -38,7 +38,7 @@ class GroceryList extends StatelessWidget {
 
                 const Spacer(), // Добавляет пустое пространство
                 Text(
-                  '${[grocery_item.quantity]}', // Количество элементов
+                  '${grocery_item.quantity}', // Количество элементов
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
