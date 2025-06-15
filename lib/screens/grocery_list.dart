@@ -13,11 +13,9 @@ class _GroceryListState extends State<GroceryList> {
   final List<GroceryItem> _groceryItems = [];
 
   void _addItem() async {
-    final newItem = await Navigator.of(context).push<GroceryItem>(
-      MaterialPageRoute(
-        builder: (ctx) => const NewItem(),
-      ),
-    );
+    final newItem = await Navigator.of(
+      context,
+    ).push<GroceryItem>(MaterialPageRoute(builder: (ctx) => const NewItem()));
 
     if (newItem == null) {
       return; // User cancelled the item creation
@@ -28,46 +26,50 @@ class _GroceryListState extends State<GroceryList> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    const emptyPage = Center(
+    Widget content = Center(
       child: Text(
         'No items added yet!',
         style: TextStyle(fontSize: 20, color: Colors.grey),
       ),
     );
 
-    var content;
-
-    if (!_groceryItems.isEmpty) {
+    if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
         itemCount: _groceryItems.length,
-        itemBuilder: (ctx, index) => ListTile(
-          title: Text(_groceryItems[index].name),
-          leading: Container(
-            width: 24,
-            height: 24,
-            color: _groceryItems[index].category.color,
-          ),
-          trailing: Text(
-            _groceryItems[index].quantity.toString(),
-          ),
-        ),
+        itemBuilder:
+            (ctx, index) => Dismissible(
+              key: ValueKey(_groceryItems[index].id),
+              // direction: DismissDirection.endToStart,
+              background: Container(
+                color: Colors.red,
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: const Icon(Icons.delete, color: Colors.white),
+              ),
+              onDismissed: (direction) {
+                setState(() {
+                  _groceryItems.removeAt(index);
+                });
+              },
+              child: ListTile(
+                title: Text(_groceryItems[index].name),
+                leading: Container(
+                  width: 24,
+                  height: 24,
+                  color: _groceryItems[index].category.color,
+                ),
+                trailing: Text(_groceryItems[index].quantity.toString()),
+              ),
+            ),
       );
-    } else {
-      content = emptyPage;
     }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Groceries'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _addItem
-          ),
-        ],
+        actions: [IconButton(icon: const Icon(Icons.add), onPressed: _addItem)],
       ),
       body: content,
     );
