@@ -25,13 +25,22 @@ class _GroceryListState extends State<GroceryList> {
   }
 
   void _loadItems() async {
-    final url = Uri.https('fir-backend-example-8c942-default-rtdb.firebaseio.com', 'shopping-list.json');
+    final url = Uri.https('fir-backend-example-8c942-default-rtdb.firebaseio.', 'shopping-list.json');
 
+    try {
     final response = await http.get(url);
 
     if(response.statusCode >= 400) {
       setState(() {
         _errorMessage = 'Failed to load items. Please try again later.';
+      });
+      return;
+    }
+
+    if (response.body == 'null' || response.body.isEmpty) {
+      setState(() {
+        _groceryItems = [];
+        _isLoading = false;
       });
       return;
     }
@@ -56,7 +65,12 @@ class _GroceryListState extends State<GroceryList> {
       _groceryItems = _loadedItems;
       _isLoading = false;
     });
-    
+  } catch (error) {
+      setState(() {
+        _errorMessage = 'Something went wrong! Please try again later.';
+        _isLoading = false;
+      });
+    }
   }
 
 
